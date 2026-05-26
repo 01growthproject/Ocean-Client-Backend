@@ -7,29 +7,23 @@ const userSchema = new mongoose.Schema(
       required: true,
     },
 
-    email: {
+    username: {
       type: String,
       required: true,
       unique: true,
     },
 
-    password: {
+    email: {
       type: String,
-      required: false, // Ab password optional hai
+      required: false,
     },
 
-    // OTP fields
-    otp: {
+    password: {
       type: String,
-      default: null,
-    },
-    
-    otpExpiry: {
-      type: Date,
-      default: null,
+      required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model("User", userSchema);

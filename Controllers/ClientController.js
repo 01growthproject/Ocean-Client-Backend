@@ -115,15 +115,17 @@ export const createClient = async (req, res) => {
     // Build all upload promises together
     const photoPromise = uploadToCloudinary(
       req.files.photo[0].path,
-      "clients/photos"
+      "Ocean_Clients/photos",
     );
 
     const docPromises =
       req.files?.documents?.map((docFile, i) =>
-        uploadToCloudinary(docFile.path, "clients/documents").then((url) => ({
-          documentType: documentsMeta[i]?.documentType || "Other",
-          imageUrl: url,
-        }))
+        uploadToCloudinary(docFile.path, "Ocean_Clients/documents").then(
+          (url) => ({
+            documentType: documentsMeta[i]?.documentType || "Other",
+            imageUrl: url,
+          }),
+        ),
       ) || [];
 
     // ✅ Run photo + all docs in parallel
@@ -147,11 +149,13 @@ export const createClient = async (req, res) => {
           : body.biometricData;
 
       const bioPromises = req.files.biometrics.map((bioFile, i) =>
-        uploadToCloudinary(bioFile.path, "clients/biometrics").then((url) => ({
-          fingerType: biometricMeta[i]?.fingerType || "Unknown",
-          fingerprintUrl: url,
-          quality: biometricMeta[i]?.quality || 0,
-        }))
+        uploadToCloudinary(bioFile.path, "Ocean_Clients/biometrics").then(
+          (url) => ({
+            fingerType: biometricMeta[i]?.fingerType || "Unknown",
+            fingerprintUrl: url,
+            quality: biometricMeta[i]?.quality || 0,
+          }),
+        ),
       );
 
       clientData.biometricData = await Promise.all(bioPromises);
@@ -280,7 +284,7 @@ export const updateClient = async (req, res) => {
     if (req.files?.photo?.[0]) {
       photoUploadIndex = uploadTasks.length;
       uploadTasks.push(
-        uploadToCloudinary(req.files.photo[0].path, "clients/photos")
+        uploadToCloudinary(req.files.photo[0].path, "Ocean_Clients/photos"),
       );
     }
 
@@ -317,8 +321,8 @@ export const updateClient = async (req, res) => {
           uploadTasks.push(
             uploadToCloudinary(
               uploadedDocuments[uploadIndex].path,
-              "clients/documents"
-            )
+              "Ocean_Clients/documents",
+            ),
           );
         }
       }
@@ -414,11 +418,13 @@ export const updateClient = async (req, res) => {
       const biometricMeta = JSON.parse(body.biometricData);
 
       const bioPromises = req.files.biometrics.map((bioFile, i) =>
-        uploadToCloudinary(bioFile.path, "clients/biometrics").then((url) => ({
-          fingerType: biometricMeta[i]?.fingerType || "Unknown",
-          fingerprintUrl: url,
-          quality: biometricMeta[i]?.quality || 0,
-        }))
+        uploadToCloudinary(bioFile.path, "Ocean_Clients/biometrics").then(
+          (url) => ({
+            fingerType: biometricMeta[i]?.fingerType || "Unknown",
+            fingerprintUrl: url,
+            quality: biometricMeta[i]?.quality || 0,
+          }),
+        ),
       );
 
       updateData.biometricData = await Promise.all(bioPromises);
