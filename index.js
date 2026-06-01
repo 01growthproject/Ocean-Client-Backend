@@ -27,7 +27,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://growthclient.netlify.app",
+      "https://ocean-client-frontend.vercel.app",
     ],
     credentials: true,
   }),
