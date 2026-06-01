@@ -1,45 +1,19 @@
 import multer from "multer";
-import { CloudinaryStorage } from "multer-storage-cloudinary";
-import cloudinary from "../Config/cloudinary.js";
 
-// Cloudinary storage for photos
-const photoStorage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "growth-clients/photos",
-    allowed_formats: ["jpg", "jpeg", "png", "webp"],
-    transformation: [{ width: 800, height: 800, crop: "limit" }],
-  },
-});
+// Temporary local storage for files
+const storage = multer.diskStorage({});
 
-// Cloudinary storage for documents
-const documentStorage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "growth-clients/documents",
-    allowed_formats: ["jpg", "jpeg", "png", "pdf"],
-  },
-});
-
-// Cloudinary storage for biometrics
-const biometricStorage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "growth-clients/biometrics",
-    allowed_formats: ["jpg", "jpeg", "png"],
-  },
-});
-
-// Upload middleware with Cloudinary storage
+// Upload middleware
 const upload = multer({
-  storage: multer.diskStorage({}), // Placeholder, will use field-specific storage
+  storage,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
-    files: 50, // Max 50 files
+    fileSize: 10 * 1024 * 1024, // 10MB
+    files: 50,
   },
   fileFilter: (req, file, cb) => {
     const allowedMimes = [
       "image/jpeg",
+      "image/jpg",
       "image/png",
       "image/webp",
       "application/pdf",
@@ -53,21 +27,27 @@ const upload = multer({
   },
 });
 
-// Error handling middleware for multer
+// Multer Error Handler
 export const multerErrorHandler = (err, req, res, next) => {
   if (err instanceof multer.MulterError) {
-    if (err.code === "FILE_TOO_LARGE") {
+    if (err.code === "LIMIT_FILE_SIZE") {
       return res.status(400).json({
         success: false,
         message: "File size exceeds 10MB limit",
       });
     }
+
     if (err.code === "LIMIT_FILE_COUNT") {
       return res.status(400).json({
         success: false,
         message: "Too many files uploaded",
       });
     }
+
+    return res.status(400).json({
+      success: false,
+      message: err.message,
+    });
   }
 
   if (err) {
