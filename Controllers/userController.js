@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 import User from "../Models/userModel.js";
 
 // ============ STATIC CREDENTIALS ============
-let STATIC_USERNAME = "Ocean";
-let STATIC_PASSWORD = "overseas";
+let STATIC_USERNAME = "OceanOverseas";
+let STATIC_PASSWORD = "ocean@2626";
 // =============================================
 
 // Simple Login with Static Credentials
